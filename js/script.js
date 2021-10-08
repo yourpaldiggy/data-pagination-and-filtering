@@ -19,20 +19,32 @@ This function will create and insert/append the elements needed to display a "pa
 */
 
 const itemsPerPage = 9;
-
+const header = document.querySelector('header');
 function showPage( list, page ){
    let startIndex = (page * itemsPerPage) - itemsPerPage;
    let endIndex = (page * itemsPerPage);
-   const ul = document.getElementsByClassName('student-list');
-   ul.document.innerHTML = "";
+   const students = data;
+   const studentList = document.querySelector('UL');
+   studentList.innerHTML = "";
    for (let i = 0; i < list.length; i++){
       if( i >= startIndex && i < endIndex ){
-          let li = document.createElement('li');
-          
-
+          let studentItems = document.createElement('li');
+          studentItems.insertAdjacentHTML('beforeend',
+          `<li class="student-item cf">
+          <div class="student-details">
+            <img class="avatar" src="${data[i].picture.thumbnail}" alt="Profile Picture">
+            <h3>${data[i].name.first} ${data[i].name.last}</h3>
+            <span class="email">${data[i].email}</span>
+          </div>
+          <div class="joined-details">
+            <span class="date">Joined ${data[i].registered.date}</span>
+          </div>
+        </li>`);
+        studentList.appendChild(studentItems);
       }
-
+      
    }
+   return studentList;
 }
 
 
@@ -40,7 +52,50 @@ function showPage( list, page ){
 Create the `addPagination` function
 This function will create and insert/append the elements needed for the pagination buttons
 */
+function addPagination(list){
+  let numOfPages = Math.ceil(list.length / itemsPerPage);
+  const linkList = document.querySelector('.link-list');
+  linkList.innerHTML = "";
+
+  for (let i = 1; i <= numOfPages; i++){
+    let button = `<li>
+    <button type="button">${i}</button>
+ </li>`;
+    linkList.insertAdjacentHTML('beforeend', button);
+    document.querySelector("button").className = "active";
+  }
+    linkList.addEventListener('click', (e) =>{
+      if(e.target.tagName === 'BUTTON'){
+        let buttons = e.target;
+        const activeButton = document.querySelector('.active');
+        activeButton.className = "";
+        buttons.className = "active";
+        showPage(list, buttons.textContent);
+      }
+
+    })
+}
+
+
+
+// this supplies the search bar for students(doesn't function atm, stumped currently)
+
+   const search = document.createElement("label");
+   search.innerHTML ='';
+   search.insertAdjacentHTML('beforeend', `
+   <label for="search" class="student-search">
+   <span>Search by name</span>
+   <input id="search" placeholder="Search by name...">
+   <button id ="search-button" type="button"><img src="img/icn-search.svg" alt="Search icon"></button>
+   </label>`
+   );
+   header.appendChild(search);
+
+   
 
 
 
 // Call functions
+showPage(data, 1);
+addPagination(data);
+
