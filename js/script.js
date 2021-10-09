@@ -20,6 +20,7 @@ This function will create and insert/append the elements needed to display a "pa
 
 const itemsPerPage = 9;
 const header = document.querySelector('header');
+
 function showPage( list, page ){
    let startIndex = (page * itemsPerPage) - itemsPerPage;
    let endIndex = (page * itemsPerPage);
@@ -32,7 +33,7 @@ function showPage( list, page ){
           studentItems.insertAdjacentHTML('beforeend',
           `<li class="student-item cf">
           <div class="student-details">
-            <img class="avatar" src="${data[i].picture.thumbnail}" alt="Profile Picture">
+            <img class="avatar" src="${data[i].picture.medium}" alt="Profile Picture">
             <h3>${data[i].name.first} ${data[i].name.last}</h3>
             <span class="email">${data[i].email}</span>
           </div>
@@ -62,23 +63,23 @@ function addPagination(list){
     <button type="button">${i}</button>
  </li>`;
     linkList.insertAdjacentHTML('beforeend', button);
-    document.querySelector("button").className = "active";
+    linkList.querySelector("button").className = "active";
   }
-    linkList.addEventListener('click', (e) =>{
-      if(e.target.tagName === 'BUTTON'){
-        let buttons = e.target;
-        const activeButton = document.querySelector('.active');
-        activeButton.className = "";
-        buttons.className = "active";
-        showPage(list, buttons.textContent);
-      }
+  linkList.addEventListener('click', (e) =>{
+    if(e.target.tagName === 'BUTTON'){
+      let buttons = e.target;
+      const activeButton = document.querySelector('.active');
+      activeButton.className = "";
+      buttons.className = "active";
+      showPage(list, buttons.textContent);
+    }
 
-    })
+  })
 }
 
 
 
-// this supplies the search bar for students(doesn't function atm, stumped currently)
+// this supplies the search bar for students(unsure as to why it doesn't work...)
 
    const search = document.createElement("label");
    search.innerHTML ='';
@@ -91,7 +92,38 @@ function addPagination(list){
    );
    header.appendChild(search);
 
-   
+   header.addEventListener('keyup', (e) => {
+     if(e.target.id === 'search'){
+       studentSearch(data);
+     }
+   })
+
+
+   header.addEventListener('click', (e) => {
+    if(e.target.id === 'search'){
+      studentSearch(data);
+    }
+
+   })
+
+function studentSearch(){
+  const search = document.querySelector('#search');
+  let input = search.value.toLowerCase();
+  const searchResults = [];
+  let searchName = '';
+  for (let i = 0; i <data.length; i++){
+    searchName = `${data[i]['name']['first']}${data[i]['name']['last'].toLowerCase()}`;
+    if (input.length !== 0 && searchName.includes(input)){
+      searchResults.push(data[i]);
+      showPage(searchResults, 1);
+      addPagination(searchResults);
+
+
+  }
+  return searchResults;
+}
+}
+
 
 
 
