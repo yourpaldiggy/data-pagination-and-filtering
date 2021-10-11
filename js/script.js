@@ -12,7 +12,6 @@ const header = document.querySelector('.header');
 function showPage(list, page) {
 	let startIndex = (page * itemsPerPage) - itemsPerPage;
 	let endIndex = (page * itemsPerPage);
-	const students = data;
 	const studentList = document.querySelector('.student-list');
 	studentList.innerHTML = "";
 	for (let i = 0; i < list.length; i++) {
@@ -79,6 +78,7 @@ search.addEventListener('click', (e) => {
 })
 // This supplies the search function, filtering through students as typed. 
 function studentSearch() {
+	const studentList = document.querySelector('.student-list');
 	const search = document.querySelector('#search');
 	let input = search.value.toLowerCase();
 	let searchResults = [];
@@ -86,11 +86,16 @@ function studentSearch() {
 		const searchName = `${data[i]['name']['first']} ${data[i]['name']['last']}`.toLocaleLowerCase();
 		if (searchName.includes(input.toLocaleLowerCase())) {
 			searchResults.push(data[i]);
+			showPage(searchResults, 1);
+			addPagination(searchResults);
+		}
+		if (searchResults.length == 0) {
+			studentList.innerHTML = "";
+			const none = `<li class="no-results"> No results, please try again.</li>`;
+			studentList.insertAdjacentHTML('beforeend', none);
+			addPagination(searchResults);
 		}
 	}
-	showPage(searchResults, 1);
-	addPagination(searchResults);
-	return searchResults;
 }
 // Call functions
 showPage(data, 1);
